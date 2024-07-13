@@ -13,6 +13,7 @@ import (
 
 	"github.com/GuiCezaF/nlw-Journey-go/internal/api"
 	"github.com/GuiCezaF/nlw-Journey-go/internal/api/spec"
+	"github.com/GuiCezaF/nlw-Journey-go/internal/mailer/mailpit"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -67,7 +68,7 @@ func run(ctx context.Context) error {
 		return err
 	}
 
-	si := api.NewAPI(pool, logger)
+	si := api.NewApi(pool, logger, mailpit.NewMailPit(pool))
 	r := chi.NewMux()
 	r.Use(middleware.RequestID, middleware.Recoverer, httputils.ChiLogger(logger))
 	r.Mount("/", spec.Handler(&si))
